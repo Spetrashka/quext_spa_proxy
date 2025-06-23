@@ -1,0 +1,289 @@
+import express from "express";
+import bodyParser from "body-parser";
+import fetch from "node-fetch";
+import https from "https";
+import { exec } from "child_process";
+import dotenv from "dotenv";
+
+const communities = [
+  {
+    id: "4f3592fd-d240-43ce-aa9e-41cdd91f040a",
+    name: "Adenine",
+  },
+  {
+    id: "73f37429-273b-4911-a0fe-92bc899339ce",
+    name: "Avenue Grove",
+  },
+  {
+    id: "d67cd7e9-3cc3-4474-a7f8-97d348f2a3d5",
+    name: "Aviara",
+  },
+  {
+    id: "cfae599d-f9eb-4bb2-94aa-7e811478acd9",
+    name: "Barrow",
+  },
+  {
+    id: "df445af7-ca7d-4163-a94b-0c150548710d",
+    name: "Cambury Place",
+  },
+  {
+    id: "45f37fa3-17b5-4b6f-9c23-01c8378212da",
+    name: "Chelsea Museum District",
+  },
+  {
+    id: "98137372-270d-4f75-a639-4ad685806a64",
+    name: "Cirque Residences",
+  },
+  {
+    id: "c739ddb1-b735-4e1b-b88f-af587c058d4a",
+    name: "Corporate Office",
+  },
+  {
+    id: "20e67e2d-37f4-4d60-acf1-3e26b723c4f6",
+    name: "Demo community",
+  },
+  {
+    id: "9aec28d9-93e6-4cb1-b380-1bb2eb56b46e",
+    name: "Domain at CityCentre",
+  },
+  {
+    id: "1bbec583-b991-4bfc-b4a2-0959e98e22df",
+    name: "Foxwood",
+  },
+  {
+    id: "16d0ddde-7fbe-4824-b29c-37036f238483",
+    name: "Hunters Glen",
+  },
+  {
+    id: "aac9b18a-f1bd-4bad-a39a-2e8364841ebc",
+    name: "Kessler Jersey Village",
+  },
+  {
+    id: "4dc57226-06af-4c2f-8a60-9d141831946c",
+    name: "Lake Colony",
+  },
+  {
+    id: "1ee5a168-7247-4009-8c75-8c4f905f97c8",
+    name: "La Maison at River Oaks",
+  },
+  {
+    id: "154b39d9-5ea7-433c-97f8-fec6c6117863",
+    name: "Madera at LeftBank",
+  },
+  {
+    id: "59d44052-9bd3-451e-98d0-f69ca2e6fa8e",
+    name: "Marcella Memorial Heights",
+  },
+  {
+    id: "dc602f86-a38b-46a2-b871-d13cec06a79a",
+    name: "Mission Fairways",
+  },
+  {
+    id: "32ce9afc-0901-40db-b424-2a847a0980e6",
+    name: "Mission Rockwall",
+  },
+  {
+    id: "ba597802-8754-4c19-ac0d-60510e9b4778",
+    name: "Montrose at Buffalo Bayou",
+  },
+  {
+    id: "1d3a050d-388e-4c58-adee-d81123982b63",
+    name: "Morningside Green",
+  },
+  {
+    id: "36e0f361-b9bc-4289-acb7-e6f136913c70",
+    name: "Oaklyn Apartment Homes",
+  },
+  {
+    id: "a6102cb9-1fa1-4620-af59-fc053fefc4e2",
+    name: "Oxit Test",
+  },
+  {
+    id: "98fb8529-7a06-4398-961d-7696b872bb82",
+    name: "Portico Kirby",
+  },
+  {
+    id: "8b7b90f1-c670-47c8-9a78-c15272674703",
+    name: "Preserve at Cypress Creek",
+  },
+  {
+    id: "afccad35-3d33-4861-bbf2-19187fc3bd37",
+    name: "Sandestin at Pearland",
+  },
+  {
+    id: "c9b21c8e-b964-4f8e-9f21-221dac4c9342",
+    name: "Saratoga",
+  },
+  {
+    id: "dd7686c0-3efd-4c0c-a385-5aee7a6b7182",
+    name: "Serena Vista",
+  },
+  {
+    id: "55672ef1-a7b2-4f07-ad1a-77b80a0a85de",
+    name: "Sinclair",
+  },
+  {
+    id: "03e908a1-507f-4c74-b282-e643a5838b5f",
+    name: "Somerset",
+  },
+  {
+    id: "1d2f826a-087e-4160-b240-ffba2019abb3",
+    name: "Summit at Salado Creek",
+  },
+  {
+    id: "03e09027-2f83-459d-becd-c88bbb428255",
+    name: "Tenison at White Rock",
+  },
+  {
+    id: "2736838d-d952-4fba-960e-333326ff4e42",
+    name: "The Armstrong at Knox",
+  },
+  {
+    id: "4617c49c-814c-4725-aad4-a90c47244432",
+    name: "The Braden on Fifth",
+  },
+  {
+    id: "5a42560a-bc48-4b29-995a-36940a518b5b",
+    name: "The Brook",
+  },
+  {
+    id: "69774f10-4746-47c1-bd29-97836a09fcab",
+    name: "The Ellis",
+  },
+  {
+    id: "c7320976-0123-491c-b84e-1f331e7939cc",
+    name: "The Lochley",
+  },
+  {
+    id: "8dfa9309-8826-47e2-b86e-f581eb3380bd",
+    name: "The Lofts at CityCentre",
+  },
+  {
+    id: "52e6bd11-8f79-42dd-9c51-5a8063b575ae",
+    name: "The Pierpont",
+  },
+  {
+    id: "28d2b5ae-a79b-4fa4-9ca1-f48fe8d8b35b",
+    name: "The Trestles Apartments",
+  },
+  {
+    id: "aad83553-179f-4763-aa41-5362b45c2d20",
+    name: "The Venti",
+  },
+  {
+    id: "97645551-d910-4704-8cf1-1e1f7ad7ab0c",
+    name: "Vantage Med Center",
+  },
+  {
+    id: "8c4b84c4-d57d-4778-8b2a-22c1197ff3d5",
+    name: "Virage on Memorial",
+  },
+  {
+    id: "c45d066e-7e14-4884-8dcc-064045596dd5",
+    name: "Waterside",
+  },
+  {
+    id: "174ee2ec-4f2d-4f04-bbea-5fc06ca8a285",
+    name: "Woodlyn Apartment Homes",
+  },
+];
+
+dotenv.config();
+// const COMMUNITY_ID = "2736838d-d952-4fba-960e-333326ff4e42";
+const COMMUNITY_ID = communities[4]?.id;
+//
+
+const agent = new https.Agent({
+  rejectUnauthorized: false, // 🔥 Вось тут гарантавана ігнаруецца TLS
+});
+
+const app = express();
+app.use(bodyParser.json());
+
+const PROD_BASE = process.env.PROXY_BASE_URL || "https://report.prod.quext.io";
+const STAGE_BASE =
+  process.env.PROXY_BASE_URL_1 || "https://report.stage.quext.io";
+const AUTH_HEADER = process.env.PROXY_AUTH || "Bearer YOUR_TOKEN_HERE";
+
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.set({
+      Date: new Date().toUTCString(),
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "0",
+      Vary: "Origin",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+      "Access-Control-Allow-Headers":
+        req.headers["access-control-request-headers"] || "*",
+      "X-Envoy-Upstream-Service-Time": "37",
+      Server: "istio-envoy",
+      "X-Firefox-Spdy": "h2",
+    });
+    return res.status(204).send();
+  }
+  next();
+});
+
+app.use(async (req, res) => {
+  const isProdRoute = req.originalUrl.startsWith("/api/v1/cube/");
+  const targetUrl = `${isProdRoute ? PROD_BASE : STAGE_BASE}${req.originalUrl}`;
+
+  console.log(`[${req.method}] ${req.originalUrl} → ${targetUrl}`);
+  console.log(req.headers);
+  if (!isProdRoute) {
+    try {
+      const fetchOptions = {
+        method: req.method,
+        headers: {
+          ...req.headers,
+          ...{
+            host: "report.stage.quext.io",
+          },
+        },
+        agent, // 👈 Вось гэта працуе стабільна
+      };
+
+      if (req.method !== "GET" && req.body) {
+        fetchOptions.body = JSON.stringify(req.body);
+      }
+
+      const response = await fetch(targetUrl, fetchOptions);
+      const data = await response.text();
+      // console.log(response.status, response);
+
+      res.status(response.status);
+      res.set(Object.fromEntries(response.headers.entries()));
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.send(data);
+    } catch (err) {
+      console.error("Proxy error:", err);
+      res.status(500).json({ error: err.message });
+    }
+  } else {
+    const curlCommand = `curl -s '${targetUrl}' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0' -H 'Accept: application/json, text/plain, */*' -H 'Accept-Language: be,en-US;q=0.7,en;q=0.3' -H 'Accept-Encoding: gzip, deflate, br, zstd' -H 'Authorization: ${AUTH_HEADER}' -H 'X-Customer-User-Id: f7fd28cc-01cf-4b4f-918b-5af090535ea4' -H 'X-Quext-Customer: 2c9bb09c-a76d-4e85-873f-b69499c51897' -H 'X-Quext-Customer-Id: 2c9bb09c-a76d-4e85-873f-b69499c51897' -H 'X-Quext-Community-Id: ${COMMUNITY_ID}' -H 'x-quext-access-quext-admin: true' -H 'x-quext-community-ids: {"comIds":[{"id":"${COMMUNITY_ID}","name":"The Armstrong at Knox","timezoneId":"US/Central"}]}' -H 'Origin: https://quext.io' -H 'Connection: keep-alive' -H 'Referer: https://quext.io/' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'TE: trailers'`;
+    console.log(curlCommand);
+    exec(curlCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        return;
+      }
+      console.log(`Response:\n${stdout}`);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,POST,PUT,DELETE,OPTIONS",
+      );
+      res.setHeader("Access-Control-Allow-Headers", "*");
+      res.status(200).send(stdout);
+    });
+  }
+});
+
+app.listen(9090, () => {
+  console.log("✅ Proxy running at http://localhost:9090");
+});

@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  local-proxy:
+    build: .
+    container_name: local_proxy_quext_spa
+    ports:
+      - "9001:3000"
+    environment:
+      PROXY_BASE_URL: https://report.prod.quext.io
+      PROXY_AUTH: Bearer YOUR_TOKEN_HERE
+    restart: unless-stopped
