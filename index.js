@@ -189,8 +189,8 @@ const communities = [
 ];
 
 dotenv.config();
-// const COMMUNITY_ID = "2736838d-d952-4fba-960e-333326ff4e42";
-const COMMUNITY_ID = communities[4]?.id;
+const COMMUNITY_ID = "2736838d-d952-4fba-960e-333326ff4e42";
+// const COMMUNITY_ID = communities[3]?.id; //  3 ,
 //
 
 const agent = new https.Agent({
