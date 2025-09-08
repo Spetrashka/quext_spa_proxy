@@ -7,6 +7,10 @@ import dotenv from "dotenv";
 
 const communities = [
   {
+    id: "2736838d-d952-4fba-960e-333326ff4e42",
+    name: "The Armstrong at Knox",
+  },
+  {
     id: "4f3592fd-d240-43ce-aa9e-41cdd91f040a",
     name: "Adenine",
   },
@@ -134,10 +138,7 @@ const communities = [
     id: "03e09027-2f83-459d-becd-c88bbb428255",
     name: "Tenison at White Rock",
   },
-  {
-    id: "2736838d-d952-4fba-960e-333326ff4e42",
-    name: "The Armstrong at Knox",
-  },
+
   {
     id: "4617c49c-814c-4725-aad4-a90c47244432",
     name: "The Braden on Fifth",
@@ -189,12 +190,12 @@ const communities = [
 ];
 
 dotenv.config();
-const COMMUNITY_ID = "2736838d-d952-4fba-960e-333326ff4e42";
-// const COMMUNITY_ID = communities[3]?.id; //  3 ,
+// const COMMUNITY_ID = "2736838d-d952-4fba-960e-333326ff4e42";
+const COMMUNITY_ID = communities[0]?.id; //  3 ,
 //
 
 const agent = new https.Agent({
-  rejectUnauthorized: false, // 🔥 Вось тут гарантавана ігнаруецца TLS
+  rejectUnauthorized: false,
 });
 
 const app = express();
@@ -241,7 +242,7 @@ app.use(async (req, res) => {
             host: "report.stage.quext.io",
           },
         },
-        agent, // 👈 Вось гэта працуе стабільна
+        agent,
       };
 
       if (req.method !== "GET" && req.body) {
